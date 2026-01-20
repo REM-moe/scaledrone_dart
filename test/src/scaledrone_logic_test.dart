@@ -9,13 +9,9 @@ import 'package:test/test.dart';
 class MockTransport extends ScaledroneTransport {
   final _controller = StreamController<ScaledroneMessage>.broadcast();
   final List<Map<String, dynamic>> sentMessages = [];
-  final _closeController = StreamController<void>.broadcast();
 
   @override
   Stream<ScaledroneMessage> get onMessage => _controller.stream;
-
-  @override
-  Stream<void> get onClose => _closeController.stream;
 
   @override
   void sendMessage(Map<String, dynamic> payload) {

@@ -1,62 +1,164 @@
-# Scaledrone Dart
+# Scaledrone Dart SDK
 
-[![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
-[![Powered by Mason](https://img.shields.io/endpoint?url=https%3A%2F%2Ftinyurl.com%2Fmason-badge)](https://github.com/felangel/mason)
-[![License: MIT][license_badge]][license_link]
+A robust, strictly-typed Dart & Flutter client for the Scaledrone Real-time Messaging API (V3).  
+This package provides a seamless way to add real-time capabilities to your Flutter apps (using WebSockets) and Dart backends (using REST).
 
-scaledrone sdk
+## Features
 
-## Installation 💻
+- ✅ **Full V3 Protocol Support:** Handles the complete WebSocket lifecycle (Handshake → Auth → Subscribe).
+- 🚀 **Two-Way Communication:** Real-time publishing and subscribing via WebSockets.
+- 👥 **Observable Rooms:** Automatically track who joined or left a room with zero boilerplate.
+- 📜 **Message History:** Fetch and sort past messages instantly upon joining a room.
+- 🔒 **Authentication:** Built-in support for JWT authentication.
+- 🛠 **Server-Side REST Client:** Send system notifications and query stats from your Dart backend.
+- 🛡 **Type Safety:** Strict JSON parsing prevents runtime crashes.
+- 🔌 **Auto-Reconnection:** Resilient connection handling.
 
-**❗ In order to start using Scaledrone Dart you must have the [Dart SDK][dart_install_link] installed on your machine.**
+## Installation
 
-Install via `dart pub add`:
+Add this to your `pubspec.yaml`:
 
-```sh
-dart pub add scaledrone_dart
+```yaml
+dependencies:
+    scaledrone_dart: ^0.1.0
 ```
 
----
-
-## Continuous Integration 🤖
-
-Scaledrone Dart comes with a built-in [GitHub Actions workflow][github_actions_link] powered by [Very Good Workflows][very_good_workflows_link] but you can also add your preferred CI/CD solution.
-
-Out of the box, on each pull request and push, the CI `formats`, `lints`, and `tests` the code. This ensures the code remains consistent and behaves correctly as you add functionality or make changes. The project uses [Very Good Analysis][very_good_analysis_link] for a strict set of analysis options used by our team. Code coverage is enforced using the [Very Good Workflows][very_good_coverage_link].
-
----
-
-## Running Tests 🧪
-
-To run all unit tests:
+Then run:
 
 ```sh
-dart pub global activate coverage 1.15.0
-dart test --coverage=coverage
-dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info
+dart pub get
 ```
 
-To view the generated coverage report you can use [lcov](https://github.com/linux-test-project/lcov).
+## Usage (Flutter / WebSocket)
 
-```sh
-# Generate Coverage Report
-genhtml coverage/lcov.info -o coverage/
+The `ScaledroneClient` is designed for client-side applications (Flutter, Web, CLI).
 
-# Open Coverage Report
-open coverage/index.html
+### 1. Connect & Subscribe
+
+```dart
+import 'package:scaledrone_dart/scaledrone_dart.dart';
+
+void main() async {
+    // 1. Initialize the client
+    final client = ScaledroneClient('YOUR_CHANNEL_ID', data: {
+        'name': 'John Doe',
+        'color': '#ff0000',
+    });
+
+    try {
+        // 2. Connect
+        await client.connect();
+        print('Connected with ID: ${client.clientId}');
+
+        // 3. Subscribe to a room
+        // Optional: Ask for the last 50 messages
+        final room = await client.subscribe('my-room', historyCount: 50);
+
+        // 4. Listen for messages
+        room.onMessage.listen((message) {
+            print('New message: $message');
+        });
+
+        // 5. Publish a message
+        room.publish({
+            'text': 'Hello from Flutter!',
+            'timestamp': DateTime.now().toIso8601String(),
+        });
+
+    } catch (e) {
+        print('Error: $e');
+    }
+}
 ```
 
-[dart_install_link]: https://dart.dev/get-dart
-[github_actions_link]: https://docs.github.com/en/actions/learn-github-actions
-[license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
-[license_link]: https://opensource.org/licenses/MIT
-[logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
-[logo_white]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_white.png#gh-dark-mode-only
-[mason_link]: https://github.com/felangel/mason
-[very_good_analysis_badge]: https://img.shields.io/badge/style-very_good_analysis-B22C89.svg
-[very_good_analysis_link]: https://pub.dev/packages/very_good_analysis
-[very_good_coverage_link]: https://github.com/marketplace/actions/very-good-coverage
-[very_good_ventures_link]: https://verygood.ventures
-[very_good_ventures_link_light]: https://verygood.ventures#gh-light-mode-only
-[very_good_ventures_link_dark]: https://verygood.ventures#gh-dark-mode-only
-[very_good_workflows_link]: https://github.com/VeryGoodOpenSource/very_good_workflows
+### 2. Observable Rooms (Who is online?)
+
+To track users, simply prefix your room name with `observable-`. The SDK automatically handles the logic.
+
+```dart
+final room = await client.subscribe('observable-chat');
+
+// Listen for the live list of members
+room.onMembers.listen((members) {
+    print('👥 Users Online: ${members.length}');
+    
+    for (var member in members) {
+        // Access the data you sent during handshake (e.g., name, color)
+        print('- ${member.id}: ${member.data}');
+    }
+});
+```
+
+### 3. Authentication (JWT)
+
+If your channel requires authentication, you can authenticate after connecting but before subscribing to private rooms.
+
+```dart
+await client.connect();
+
+// ... Call your backend to generate a JWT for client.clientId ...
+final String jwt = await myBackend.fetchToken(client.clientId);
+
+// Authenticate
+await client.authenticate(jwt);
+
+// Now you can subscribe to private rooms
+client.subscribe('private-room');
+```
+
+## Usage (Server-Side / REST)
+
+Use `ScaledroneRest` for backend logic (e.g., sending system alerts, banning users, or checking stats).  
+**Never use this in a Flutter app, as it requires your Secret Key.**
+
+```dart
+import 'package:scaledrone_dart/scaledrone_dart.dart';
+
+void main() async {
+    // Initialize with Secret Key
+    final api = ScaledroneRest('YOUR_CHANNEL_ID', 'YOUR_SECRET_KEY');
+
+    // Broadcast a message (System Notification)
+    await api.publish('notifications', {
+        'alert': 'Server maintenance in 10 minutes.',
+        'priority': 'high',
+    });
+
+    // Check how many users are online
+    final stats = await api.getStats();
+    print('Users online: ${stats['users_count']}');
+
+    // Get list of active rooms
+    final rooms = await api.getActiveRooms();
+    print('Active rooms: $rooms');
+}
+```
+
+## Architecture & Debugging
+
+This package uses the [`logging`](https://pub.dev/packages/logging) package.  
+To see protocol frames (like Handshake, Subscribe) in your console:
+
+```dart
+import 'package:logging/logging.dart';
+
+void main() {
+    Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen((record) {
+        print('${record.level.name}: ${record.time}: ${record.message}');
+    });
+    
+    // ... run app
+}
+```
+
+## Structure
+
+- **ScaledroneClient:** Manages the persistent WebSocket connection.
+- **Room:** Handles message streams, history buffering, and member lists.
+- **ScaledroneRest:** Stateless HTTP client for server-side operations.
+
+## Contributing
+
+Pull requests are welcome!  
+Please check the `test` folder for existing tests and ensure any new logic is covered.
