@@ -2,17 +2,9 @@
 
 A robust, strictly-typed Dart & Flutter client for the Scaledrone Real-time Messaging API (V3).  
 This package provides a seamless way to add real-time capabilities to your Flutter apps (using WebSockets) and Dart backends (using REST).
-
-## Features
-
-- ✅ **Full V3 Protocol Support:** Handles the complete WebSocket lifecycle (Handshake → Auth → Subscribe).
-- 🚀 **Two-Way Communication:** Real-time publishing and subscribing via WebSockets.
-- 👥 **Observable Rooms:** Automatically track who joined or left a room with zero boilerplate.
-- 📜 **Message History:** Fetch and sort past messages instantly upon joining a room.
-- 🔒 **Authentication:** Built-in support for JWT authentication.
-- 🛠 **Server-Side REST Client:** Send system notifications and query stats from your Dart backend.
-- 🛡 **Type Safety:** Strict JSON parsing prevents runtime crashes.
-- 🔌 **Auto-Reconnection:** Resilient connection handling.
+```
+Gemini has helped a lot 
+```
 
 ## Installation
 
