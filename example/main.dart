@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:io';
 import 'package:logging/logging.dart';
@@ -45,7 +46,7 @@ Future<void> main() async {
     // Listen for member updates
     obsRoom.onMembers.listen((members) {
       print('👥 Member List Updated: ${members.length} users online');
-      for (var m in members) {
+      for (final m in members) {
         print('   - ${m.id} (${m.data})');
       }
     });

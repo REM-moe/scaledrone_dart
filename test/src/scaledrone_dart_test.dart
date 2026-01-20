@@ -1,3 +1,5 @@
+// ignore_for_file: strict_raw_type
+
 import 'package:scaledrone_dart/src/models/scaledrone_message.dart';
 import 'package:test/test.dart';
 
