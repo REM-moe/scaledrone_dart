@@ -1,5 +1,3 @@
-// ignore_for_file: inference_failure_on_instance_creation
-
 import 'dart:async';
 import 'package:scaledrone_dart/scaledrone_dart.dart';
 import 'package:scaledrone_dart/src/transport/scaledrone_transport.dart';
