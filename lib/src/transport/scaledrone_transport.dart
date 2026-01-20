@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:logging/logging.dart';
+import 'package:scaledrone_dart/src/models/scaledrone_message.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../models/scaledrone_message.dart';
 
 /// Manages the low-level WebSocket connection to Scaledrone.
 class ScaledroneTransport {
