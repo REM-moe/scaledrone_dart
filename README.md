@@ -1,5 +1,5 @@
 # Scaledrone Dart SDK
-
+![alt text](image.png)
 A robust, strictly-typed Dart & Flutter client for the Scaledrone Real-time Messaging API (V3).  
 This package provides a seamless way to add real-time capabilities to your Flutter apps (using WebSockets) and Dart backends (using REST).
 ```
@@ -60,6 +60,9 @@ void main() async {
     } catch (e) {
         print('Error: $e');
     }
+    
+    // 6. Unsubscribe
+    client.unsubscribe('my-room');
 }
 ```
 
@@ -73,11 +76,15 @@ final room = await client.subscribe('observable-chat');
 // Listen for the live list of members
 room.onMembers.listen((members) {
     print('👥 Users Online: ${members.length}');
-    
-    for (var member in members) {
-        // Access the data you sent during handshake (e.g., name, color)
-        print('- ${member.id}: ${member.data}');
-    }
+});
+
+// Listen for granular join/leave events
+room.onMemberJoin.listen((member) {
+    print('➕ User joined: ${member.id}');
+});
+
+room.onMemberLeave.listen((member) {
+    print('➖ User left: ${member.id}');
 });
 ```
 

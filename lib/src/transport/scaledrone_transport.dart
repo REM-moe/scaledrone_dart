@@ -15,6 +15,13 @@ class ScaledroneTransport {
   final StreamController<ScaledroneMessage> _messageStream =
       StreamController.broadcast();
 
+  final StreamController<void> _disconnectStream = StreamController.broadcast();
+
+  /// Stream of all incoming Scaledrone messages.
+
+  /// Stream when connection is closed or lost
+  Stream<void> get onDisconnect => _disconnectStream.stream;
+
   /// Maps callback IDs to pending Futures.
   final Map<int, Completer<ScaledroneMessage>> _pendingRequests = {};
 
@@ -118,9 +125,11 @@ class ScaledroneTransport {
   void _handleSocketError(dynamic error) {
     _log.severe('WebSocket Error', error);
     _messageStream.addError(error as Object);
+    _disconnectStream.add(null);
   }
 
   void _handleSocketDone() {
     _log.info('WebSocket Closed.');
+    _disconnectStream.add(null);
   }
 }
