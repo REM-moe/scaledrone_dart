@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.2.1] - 2026-01-24
+
+### Added
+ - Chat tutorial
+
 ## [0.2.0] - 2026-01-20
 
 ### Added

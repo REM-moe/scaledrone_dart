@@ -1,6 +1,6 @@
 name: scaledrone_dart
 description:  A Scaledrone V3 SDK for Dart and Flutter, implementing the full WebSocket protocol with Observable Rooms and History support.
-version: 0.2.0
+version: 0.2.1
 homepage: https://github.com/REM-moe/scaledrone_dart
 
 environment:
