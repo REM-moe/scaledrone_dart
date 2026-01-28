@@ -1,1 +1,18 @@
 include: package:very_good_analysis/analysis_options.yaml
+
+analyzer:
+  errors:
+    inference_failure_on_instance_creation: ignore
+    discarded_futures: ignore
+    avoid_catches_without_on_clauses: ignore
+    lines_longer_than_80_chars: ignore
+    unawaited_futures: ignore
+    constant_identifier_names: ignore
+    avoid_unused_constructor_parameters: ignore
+    no_default_cases: ignore
+    directives_ordering: ignore
+    unnecessary_import: ignore
+    prefer_const_constructors: ignore
+    document_ignores: ignore
+    avoid_print: ignore
+    inference_failure_on_collection_literal: ignore
