@@ -1,10 +1,26 @@
 # Scaledrone Dart SDK
-![alt text](image.png)
+
+![alt text](scaledrone.gif)
+
 A robust, strictly-typed Dart & Flutter client for the Scaledrone Real-time Messaging API (V3).  
 This package provides a seamless way to add real-time capabilities to your Flutter apps (using WebSockets) and Dart backends (using REST).
+
+> Gemini has helped a lot
+
+## 🚀 Run the Example
+
+Check out the full-featured CLI chat application in `example/chat.dart` to see the SDK in action.
+
+```bash
+dart run example/chat.dart
 ```
-Gemini has helped a lot 
-```
+
+This example demonstrates:
+- Connecting to a channel
+- Subscribing to rooms
+- Publishing messages
+- Handling member join/leave events
+- Browsing message history
 
 ## Installation
 

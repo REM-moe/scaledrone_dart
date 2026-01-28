@@ -4,4 +4,4 @@
 .dart_tool/
 .packages
 build/
-pubspec.lock
+pubspec.lock.failed_tracker
